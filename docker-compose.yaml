@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: postgres-social-network
+    image: "postgres:16.1-alpine"
+    environment:
+      POSTGRES_DB: "social_network"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      PGDATA: "/data/postgres"
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+  script:
+
+  social-network:
+    build:
+      dockerfile: Dockerfile
+    container_name: social-network-server
+    environment:
+      JWT_KEY: $JWT_KEY
+      DB_HOST: $DB_HOST
+      DB_USERNAME: $DB_USERNAME
+      DB_PASSWORD: $DB_PASSWORD
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  postgres:
