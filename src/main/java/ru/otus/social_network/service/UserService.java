@@ -1,17 +1,16 @@
 package ru.otus.social_network.service;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.otus.api.v1.exception.InvalidDataException;
 import ru.otus.api.v1.model.User;
 import ru.otus.api.v1.model.UserRegisterPostRequest;
+import ru.otus.social_network.exception.InvalidDataException;
 import ru.otus.social_network.mapper.UserMapper;
-import ru.otus.social_network.model.Auth;
 import ru.otus.social_network.repository.AuthRepository;
 import ru.otus.social_network.repository.UserRepository;
+
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,4 +37,7 @@ public class UserService {
     }
 
 
+    public Collection<User> findUserByFirstAndLastName(String firstName, String secondName) {
+        return userRepository.findUserByFirstAndLastName(firstName, secondName);
+    }
 }
