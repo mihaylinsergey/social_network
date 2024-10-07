@@ -1,0 +1,1 @@
+CREATE INDEX idx_users_first_second_name_pattern ON public.users (first_name text_pattern_ops, second_name text_pattern_ops);
