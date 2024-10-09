@@ -1,23 +1,50 @@
 version: '3.9'
 
 services:
-  db:
-    container_name: postgres-social-network
+  pgmaster:
+    container_name: "pgmaster"
     image: "postgres:16.1-alpine"
+    networks:
+      - pgnet
     environment:
       POSTGRES_DB: "social_network"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "password"
-      PGDATA: "/data/postgres"
     volumes:
-      - postgres:/data/postgres
+      - "./volumes/pgmaster/:/var/lib/postgresql/data"
     ports:
       - "5432:5432"
+
+  pgslave:
+    container_name: "pgslave"
+    image: "postgres:16.1-alpine"
+    networks:
+      - pgnet
+    ports:
+      - "15432:5432"
+    volumes:
+      - "./volumes/pgslave/:/var/lib/postgresql/data"
+    environment: &AUTH
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+
+  pgslaveasync:
+    container_name: "pgslaveasync"
+    image: "postgres:16.1-alpine"
+    networks:
+      - pgnet
+    ports:
+      - "15433:5432"
+    volumes:
+      - "./volumes/pgslaveasync/:/var/lib/postgresql/data"
+    environment: &AUTH
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
 
   social-network:
     build:
       dockerfile: Dockerfile
-    container_name: social-network-server
+    container_name: "social-network-server"
     environment:
       JWT_KEY: $JWT_KEY
       DB_HOST: $DB_HOST
@@ -26,7 +53,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - pgmaster
 
-volumes:
-  postgres:
+networks:
+  pgnet:
