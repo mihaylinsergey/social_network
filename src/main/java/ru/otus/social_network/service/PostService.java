@@ -6,14 +6,11 @@ import org.springframework.stereotype.Service;
 import ru.otus.api.v1.model.Post;
 import ru.otus.social_network.exception.InvalidDataException;
 import ru.otus.social_network.repository.PostRepository;
-
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class PostService {
     private final Counter successfulInsertsCounter;
-    private AtomicInteger insertedCount = new AtomicInteger();
     private final PostRepository postRepository;
 
     public PostService(MeterRegistry meterRegistry, PostRepository postRepository) {
@@ -24,9 +21,8 @@ public class PostService {
     public UUID createPost(Post post) throws InvalidDataException {
             var postId = postRepository.createPost(post);
             if (post != null) {
-                insertedCount.incrementAndGet();
+                successfulInsertsCounter.increment(1.0);
             }
-        successfulInsertsCounter.increment(insertedCount.doubleValue());
         return postId;
     }
 }
