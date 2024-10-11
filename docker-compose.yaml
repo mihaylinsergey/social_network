@@ -13,7 +13,7 @@ services:
     volumes:
       - "./volumes/pgmaster/:/var/lib/postgresql/data"
     ports:
-      - "5432:5432"
+      - "15431:5432"
 
   pgslave:
     container_name: "pgslave"
@@ -41,15 +41,26 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "password"
 
+  pgadmin:
+    container_name: "pgadmin4_container"
+    image: "dpage/pgadmin4:latest"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "root"
+    ports:
+      - "5050:80"
+    volumes:
+      - "./data/pgadmin:/var/lib/pgadmin"
+
   social-network:
     build:
       dockerfile: Dockerfile
     container_name: "social-network-server"
     environment:
-      JWT_KEY: $JWT_KEY
-      DB_HOST: $DB_HOST
-      DB_USERNAME: $DB_USERNAME
-      DB_PASSWORD: $DB_PASSWORD
+#      JWT_KEY: $JWT_KEY
+#      DB_HOST: $DB_HOST
+      DB_USERNAME: "postgres"
+      DB_PASSWORD: "password"
     ports:
       - "8080:8080"
     depends_on:
@@ -68,6 +79,7 @@ services:
       monitoring:
         aliases:
           - grafana
+
   prometheus:
     image: prom/prometheus
     ports:

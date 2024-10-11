@@ -3,6 +3,7 @@ package ru.otus.social_network.service;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.api.v1.model.User;
 import ru.otus.api.v1.model.UserRegisterPostRequest;
 import ru.otus.social_network.exception.InvalidDataException;
@@ -32,11 +33,13 @@ public class UserService {
         return id;
     }
 
+    @Transactional(readOnly = false)
     public Optional<User> findUserById(String id) {
         return userRepository.findUserById(id);
     }
 
 
+    @Transactional(readOnly = false)
     public Collection<User> findUserByFirstAndLastName(String firstName, String secondName) {
         return userRepository.findUserByFirstAndLastName(firstName, secondName);
     }

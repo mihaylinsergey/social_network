@@ -7,7 +7,7 @@ build/
 volumes
 grafana
 prometheus
-
+data
 ### IntelliJ IDEA ###
 .idea
 *.iws

@@ -3,6 +3,7 @@ package ru.otus.social_network.service;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.api.v1.model.Post;
 import ru.otus.social_network.exception.InvalidDataException;
 import ru.otus.social_network.repository.PostRepository;
@@ -18,6 +19,7 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
+    @Transactional(readOnly = false)
     public UUID createPost(Post post) throws InvalidDataException {
             var postId = postRepository.createPost(post);
             if (post != null) {

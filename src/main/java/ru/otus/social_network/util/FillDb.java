@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class FillDb {
     private static final String CSV_FILE_PATH = "people.v2.csv";
-    private static final String DB_URL = "jdbc:postgresql://127.0.0.1:5432/social_network?useUnicode=true&characterEncoding=UTF-8";
+    private static final String DB_URL = "jdbc:postgresql://localhost:15431/social_network?useUnicode=true&characterEncoding=UTF-8";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = "password";
 
