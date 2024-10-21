@@ -27,7 +27,6 @@ public class UserRepository {
             ps.setString(6, user.getCity());
             return ps;
         });
-
         return id;
     }
 
@@ -37,7 +36,6 @@ public class UserRepository {
                 FROM users
                 WHERE id = ?
                 """;
-
         User user = jdbc.queryForObject(sql, this::mapRowToUser, UUID.fromString(id));
         return Optional.ofNullable(user);
     }
@@ -49,7 +47,6 @@ public class UserRepository {
                 WHERE first_name LIKE ? AND second_name LIKE ?
                 ORDER BY id
                 """;
-
         return jdbc.query(sql, this::mapRowToUser, firstName + "%", secondName + "%");
     }
 

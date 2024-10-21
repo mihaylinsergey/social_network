@@ -34,9 +34,11 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.34")
 
     //metrics
-    implementation ("org.springframework.boot:spring-boot-starter-actuator")
-    implementation ("io.micrometer:micrometer-registry-prometheus")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
+    //radis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     testCompileOnly("org.projectlombok:lombok:1.18.34")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.34")

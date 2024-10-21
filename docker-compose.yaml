@@ -94,6 +94,10 @@ services:
         aliases:
           - prometheus
 
+  redis:
+    image: redis:6.0
+    ports:
+      - "6379:6379"
 networks:
   pgnet:
   monitoring:

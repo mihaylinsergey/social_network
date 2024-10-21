@@ -24,6 +24,7 @@ public class UserService {
 
     private final UserMapper userMapper;
 
+    @Transactional(readOnly = false)
     public UUID registerUser(UserRegisterPostRequest request) throws InvalidDataException {
         var newUser = userMapper.toUser(request);
         var id = userRepository.save(newUser);
@@ -33,13 +34,13 @@ public class UserService {
         return id;
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public Optional<User> findUserById(String id) {
         return userRepository.findUserById(id);
     }
 
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public Collection<User> findUserByFirstAndLastName(String firstName, String secondName) {
         return userRepository.findUserByFirstAndLastName(firstName, secondName);
     }
