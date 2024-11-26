@@ -34,13 +34,13 @@ public class UserService {
         return id;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public Optional<User> findUserById(String id) {
         return userRepository.findUserById(id);
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public Collection<User> findUserByFirstAndLastName(String firstName, String secondName) {
         return userRepository.findUserByFirstAndLastName(firstName, secondName);
     }
