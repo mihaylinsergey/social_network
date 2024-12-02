@@ -35,7 +35,7 @@ public class PostService {
         return postId;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public List<Post> getPostFeed(String userId) {
         // Получаем данные из кэша
         List<Post> cachedFeed = (List<Post>) redisTemplate.opsForValue().get(userId);
@@ -59,7 +59,7 @@ public class PostService {
         return postRepository.deletePost(post);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public Post getPost(Post post) throws InvalidDataException {
         return postRepository.getPost(post);
     }
