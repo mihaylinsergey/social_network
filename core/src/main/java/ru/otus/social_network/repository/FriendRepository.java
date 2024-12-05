@@ -2,8 +2,10 @@ package ru.otus.social_network.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -35,5 +37,16 @@ public class FriendRepository {
             return ps;
         });
         return rowsAffected > 0;
+    }
+
+    public List<UUID> getFriendsById(String userId) {
+        String sql = """
+                SELECT friend
+                FROM friends
+                WHERE target_user = ?
+                """;
+        RowMapper<UUID> rowMapper = (rs, rowNum) -> UUID.fromString(rs.getString("friend"));
+        List<UUID> listFriends = jdbc.query(sql, rowMapper, UUID.fromString(userId));
+        return listFriends;
     }
 }
