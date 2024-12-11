@@ -33,6 +33,13 @@ dependencies {
     //radis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    //websocket
+    implementation ("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.webjars:stomp-websocket:2.3.4")
+
+    //rabbit
+    implementation("org.springframework.amqp:spring-rabbit:3.0.8")
+
     testCompileOnly("org.projectlombok:lombok:1.18.34")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
