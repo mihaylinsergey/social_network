@@ -1,24 +1,36 @@
 package ru.otus.social_network.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.api.v1.model.DialogMessage;
 import ru.otus.api.v1.model.DialogUserIdSendPostRequest;
 import ru.otus.api.v1.model.LoginPost500Response;
+import ru.otus.social_network.service.DialogRedisService;
 import ru.otus.social_network.service.DialogService;
 import ru.otus.social_network.util.UserInterceptor;
+import java.util.List;
 
-@AllArgsConstructor
 @RequestMapping("/dialog")
 @RestController
 public class DialogController {
     private final UserInterceptor userInterceptor;
 
     private final DialogService dialogService;
+
+    private final DialogRedisService dialogRedisService;
+
+    @Value("${dialog.service.in.memory}")
+    private boolean IN_MEMORY;
+
+    public DialogController(UserInterceptor userInterceptor, DialogService dialogService, DialogRedisService dialogRedisService) {
+        this.userInterceptor = userInterceptor;
+        this.dialogService = dialogService;
+        this.dialogRedisService = dialogRedisService;
+    }
 
     @PostMapping("/{userId}/send")
     public ResponseEntity<?> sendMessage(@RequestBody DialogUserIdSendPostRequest message,
@@ -32,7 +44,12 @@ public class DialogController {
             sendMessage.setFrom(existId);
             sendMessage.setTo(toUserId);
             sendMessage.setText(message.getText());
-            var response = dialogService.sendMessage(sendMessage);
+            boolean response = false;
+            if (IN_MEMORY) {
+                response = dialogRedisService.sendMessage(sendMessage);
+            } else {
+                response = dialogService.sendMessage(sendMessage);
+            }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginPost500Response()
@@ -52,7 +69,12 @@ public class DialogController {
             var usersIds = new DialogMessage();
             usersIds.setFrom(existUserId);
             usersIds.setTo(fromUserId);
-            var response = dialogService.getMessages(usersIds);
+            List<DialogMessage> response;
+            if (IN_MEMORY) {
+                response = dialogRedisService.getMessages(usersIds);
+            } else {
+                response = dialogService.getMessages(usersIds);
+            }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new LoginPost500Response()
