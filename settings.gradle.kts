@@ -13,3 +13,4 @@ rootProject.name = "social_network"
 
 include("dialog_service")
 include("core")
+include("dialog_service_redis")
