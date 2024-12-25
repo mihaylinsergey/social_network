@@ -2,6 +2,8 @@ package ru.otus.social_network.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,8 @@ public class DialogController {
     @Value("${dialog.service.in.memory}")
     private boolean IN_MEMORY;
 
+    private static final Logger logger = LoggerFactory.getLogger(DialogController.class);
+
     public DialogController(UserInterceptor userInterceptor, DialogService dialogService, DialogRedisService dialogRedisService) {
         this.userInterceptor = userInterceptor;
         this.dialogService = dialogService;
@@ -35,8 +39,10 @@ public class DialogController {
     @PostMapping("/{userId}/send")
     public ResponseEntity<?> sendMessage(@RequestBody DialogUserIdSendPostRequest message,
                                          @PathVariable("userId") String toUserId,
-                                         @NonNull HttpServletRequest request) {
+                                         @NonNull HttpServletRequest request,
+                                         @RequestHeader(value = "x-request-id", required = false) String requestId) {
         // TODO добавить валидацию
+        logger.info("Handling request with x-request-id: {}", requestId);
         try {
             // Получаем информацию о текущем пользователе
             var existId = userInterceptor.getUserIdFromToken(request);
@@ -48,7 +54,7 @@ public class DialogController {
             if (IN_MEMORY) {
                 response = dialogRedisService.sendMessage(sendMessage);
             } else {
-                response = dialogService.sendMessage(sendMessage);
+                response = dialogService.sendMessage(sendMessage, requestId);
             }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -61,8 +67,10 @@ public class DialogController {
 
     @GetMapping("/{userId}/list")
     public ResponseEntity<?> getMessages(@PathVariable("userId") String fromUserId,
-                                         @NonNull HttpServletRequest request) {
+                                         @NonNull HttpServletRequest request,
+                                         @RequestHeader(value = "x-request-id", required = false) String requestId) {
         // TODO добавить валидацию
+        logger.info("Handling request with x-request-id: {}", requestId);
         try {
             // Получаем информацию о текущем пользователе
             var existUserId = userInterceptor.getUserIdFromToken(request);
@@ -73,7 +81,7 @@ public class DialogController {
             if (IN_MEMORY) {
                 response = dialogRedisService.getMessages(usersIds);
             } else {
-                response = dialogService.getMessages(usersIds);
+                response = dialogService.getMessages(usersIds, requestId);
             }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
