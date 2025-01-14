@@ -8,7 +8,7 @@ volumes
 grafana
 prometheus
 data
-rabbitmq_data
+!**/rabbitmq_data
 ### IntelliJ IDEA ###
 .idea
 *.iws
