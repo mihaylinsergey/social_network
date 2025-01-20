@@ -1,10 +1,7 @@
 package ru.otus.social_network.config;
 
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import ru.otus.social_network.routingdatasource.ReplicationRoutingDataSource;
@@ -17,6 +14,7 @@ import java.util.Map;
  *
  * <code>@Primary</code> and <code>@DependsOn</code> are the key requirements for Spring Boot.
  */
+@Profile("replication")
 @Configuration
 public class ReplicationDataSourceConfig {
     /**

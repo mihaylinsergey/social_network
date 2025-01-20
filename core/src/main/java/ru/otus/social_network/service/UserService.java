@@ -34,7 +34,7 @@ public class UserService {
         return id;
     }
 
-    @Transactional(readOnly = false)
+    @Transactional(readOnly = true)
     public Optional<User> findUserById(String id) {
         return userRepository.findUserById(id);
     }
