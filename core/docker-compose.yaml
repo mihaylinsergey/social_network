@@ -1,0 +1,218 @@
+version: '3.9'
+
+services:
+  pgmaster:
+    container_name: "pgmaster"
+    image: "postgres:16.1-alpine"
+    networks:
+      - pgnet
+    environment:
+      POSTGRES_DB: "social_network"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      # Настройка логирования
+      POSTGRES_LOGGING_COLLECTOR: "on"
+      POSTGRES_LOG_DIRECTORY: "/var/log/postgresql"
+      POSTGRES_LOG_FILENAME: "postgresql.log"
+      POSTGRES_LOG_STATEMENT: "all"
+      POSTGRES_LOG_MIN_DURATION_STATEMENT: "0"
+    volumes:
+      - "./volumes/pgmaster/:/var/lib/postgresql/data"
+    ports:
+      - "15431:5432"
+
+  pgslave:
+    container_name: "pgslave"
+    image: "postgres:16.1-alpine"
+    networks:
+      - pgnet
+    ports:
+      - "15432:5432"
+    volumes:
+      - "./volumes/pgslave/:/var/lib/postgresql/data"
+    environment: &AUTH
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      # Настройка логирования
+      POSTGRES_LOGGING_COLLECTOR: "on"
+      POSTGRES_LOG_DIRECTORY: "/var/log/postgresql"
+      POSTGRES_LOG_FILENAME: "postgresql.log"
+      POSTGRES_LOG_STATEMENT: "all"
+      POSTGRES_LOG_MIN_DURATION_STATEMENT: "0"
+    depends_on:
+      - pgmaster
+
+  pgslaveasync:
+    container_name: "pgslaveasync"
+    image: "postgres:16.1-alpine"
+    networks:
+      - pgnet
+    ports:
+      - "15433:5432"
+    volumes:
+      - "./volumes/pgslaveasync/:/var/lib/postgresql/data"
+    environment: &AUTH
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      # Настройка логирования
+      POSTGRES_LOGGING_COLLECTOR: "on"
+      POSTGRES_LOG_DIRECTORY: "/var/log/postgresql"
+      POSTGRES_LOG_FILENAME: "postgresql.log"
+      POSTGRES_LOG_STATEMENT: "all"
+      POSTGRES_LOG_MIN_DURATION_STATEMENT: "0"
+    depends_on:
+      - pgmaster
+
+  pgadmin:
+    container_name: "pgadmin4_container"
+    image: "dpage/pgadmin4:latest"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "root"
+    ports:
+      - "5050:80"
+    volumes:
+      - "./data/pgadmin:/var/lib/pgadmin"
+
+  social-network-1:
+    build:
+      dockerfile: Dockerfile
+    container_name: "social-network-1"
+    environment:
+      SPRING_PROFILES_ACTIVE: "haproxy"
+      DB_NAME: "social_network"
+      DB_M_SERVER: "haproxy"
+      DB_M_PORT: "5001"
+      DB_M_USER: "postgres"
+      DB_M_PASS: "password"
+      DB_S_SERVER: "haproxy"
+      DB_S_PORT: "5001"
+      DB_S_USER: "postgres"
+      DB_S_PASS: "password"
+      RABBIT_MQ: "rabbitmq"
+      RABBIT_PORT: "5672"
+      RABBIT_USER: "user"
+      RABBIT_PASSWORD: "password"
+      PORT: "8090"
+#      JWT_KEY: $JWT_KEY
+#      DB_HOST: $DB_HOST
+    ports:
+      - "8090:8090"
+    depends_on:
+      - pgmaster
+      - redis
+      - rabbitmq
+    networks:
+      - pgnet
+
+  social-network-2:
+    build:
+      dockerfile: Dockerfile
+    container_name: "social-network-2"
+    environment:
+      SPRING_PROFILES_ACTIVE: "haproxy"
+      DB_NAME: "social_network"
+      DB_M_SERVER: "haproxy"
+      DB_M_PORT: "5001"
+      DB_M_USER: "postgres"
+      DB_M_PASS: "password"
+      DB_S_SERVER: "haproxy"
+      DB_S_PORT: "5001"
+      DB_S_USER: "postgres"
+      DB_S_PASS: "password"
+      RABBIT_MQ: "rabbitmq"
+      RABBIT_PORT: "5672"
+      RABBIT_USER: "user"
+      RABBIT_PASSWORD: "password"
+      PORT: "8091"
+    #      JWT_KEY: $JWT_KEY
+    #      DB_HOST: $DB_HOST
+    ports:
+      - "8091:8091"
+    depends_on:
+      - pgmaster
+      - redis
+      - rabbitmq
+    networks:
+      - pgnet
+
+  grafana:
+    build: 'config/grafana'
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      monitoring:
+        aliases:
+          - grafana
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      monitoring:
+        aliases:
+          - prometheus
+
+  redis:
+    image: redis:6.0
+    ports:
+      - "6379:6379"
+    networks:
+      - pgnet
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # Порт для AMQP протокола
+      - "15672:15672" # Порт для доступа к панели управления RabbitMQ
+    environment:
+      RABBITMQ_DEFAULT_USER: user     # Установите имя пользователя
+      RABBITMQ_DEFAULT_PASS: password # Установите пароль
+    volumes:
+      - "./rabbitmq_data:/var/lib/rabbitmq"
+    networks:
+      - pgnet
+
+  haproxy:
+    container_name: haproxy
+    build:
+      context: haproxy/.
+      args:
+        - no-cache
+    ports:
+      - "5001:5001"
+      - "7001:7001"
+    depends_on:
+      - pgmaster
+      - pgslave
+    networks:
+      - pgnet
+
+  nginx:
+    image: nginx:1.21
+    ports:
+      - "4088:80"
+      - "4080:8080"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - pgnet
+    depends_on:
+      - social-network-1
+      - social-network-2
+
+networks:
+  pgnet:
+  monitoring:
