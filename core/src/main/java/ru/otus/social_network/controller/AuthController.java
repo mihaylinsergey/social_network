@@ -8,8 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.api.v1.model.*;
 import ru.otus.social_network.exception.InvalidDataException;
+import ru.otus.social_network.model.*;
 import ru.otus.social_network.service.AuthService;
 import ru.otus.social_network.service.JwtService;
 import ru.otus.social_network.service.UserService;

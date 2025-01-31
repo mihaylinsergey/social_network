@@ -2,13 +2,17 @@ plugins {
     java
     id("org.springframework.boot") version "3.3.3"
     id("io.spring.dependency-management") version "1.1.6"
-    id("org.openapi.generator") version "7.7.0"
+//    id("org.openapi.generator") version "7.11.0"
 }
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -45,26 +49,26 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
-
-tasks.named("compileJava") {
-    dependsOn(tasks.openApiGenerate)
-}
-
-sourceSets {
-    main {
-        java.srcDir(layout.buildDirectory.dir("generate-resources/main/src/main/java"))
-    }
-}
-
-openApiGenerate {
-    generatorName.set("java")
-    configOptions.set(mapOf(
-        "library" to "restclient",
-        "openApiNullable" to "false"
-    ))
-    inputSpec.set("$rootDir/core/src/main/resources/specs/spec-v1.json")
-    ignoreFileOverride.set(".openapi-generator-java-sources.ignore")
-    invokerPackage.set("ru.otus.api.v1.invoker")
-    modelPackage.set("ru.otus.api.v1.model")
-    apiPackage.set("ru.otus.api.v1.api")
-}
+//
+//tasks.named("compileJava") {
+//    dependsOn(tasks.openApiGenerate)
+//}
+//
+//sourceSets {
+//    main {
+//        java.srcDir(layout.buildDirectory.dir("generate-resources/main/src/main/java"))
+//    }
+//}
+//
+//openApiGenerate {
+//    generatorName.set("java")
+//    configOptions.set(mapOf(
+//        "library" to "restclient",
+//        "openApiNullable" to "false"
+//    ))
+//    inputSpec.set("$rootDir/core/src/main/resources/specs/spec-v1.json")
+//    ignoreFileOverride.set(".openapi-generator-java-sources.ignore")
+//    invokerPackage.set("ru.otus.api.v1.invoker")
+//    modelPackage.set("ru.otus.api.v1.model")
+//    apiPackage.set("ru.otus.api.v1.api")
+//}

@@ -8,4 +8,6 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.5.0"
 }
 
-rootProject.name = "count_service"
+rootProject.name = "social_network"
+
+include("core")

@@ -3,8 +3,8 @@ package ru.otus.social_network.repository;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.otus.api.v1.model.Post;
 import ru.otus.social_network.exception.InvalidDataException;
+import ru.otus.social_network.model.Post;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

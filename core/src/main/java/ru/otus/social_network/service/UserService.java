@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.api.v1.model.User;
-import ru.otus.api.v1.model.UserRegisterPostRequest;
 import ru.otus.social_network.exception.InvalidDataException;
 import ru.otus.social_network.mapper.UserMapper;
+import ru.otus.social_network.model.User;
+import ru.otus.social_network.model.UserRegisterPostRequest;
 import ru.otus.social_network.repository.AuthRepository;
 import ru.otus.social_network.repository.UserRepository;
 

@@ -5,9 +5,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import ru.otus.api.v1.model.DialogMessage;
-import ru.otus.api.v1.model.UserRegisterPost200Response;
 import ru.otus.social_network.exception.InvalidDataException;
+import ru.otus.social_network.model.DialogMessage;
+import ru.otus.social_network.model.UserRegisterPost200Response;
 import ru.otus.social_network.service.FeedService;
 import ru.otus.social_network.service.FriendService;
 

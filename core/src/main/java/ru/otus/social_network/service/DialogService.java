@@ -8,7 +8,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.otus.api.v1.model.DialogMessage;
+import ru.otus.social_network.model.DialogMessage;
+
 import java.util.List;
 
 @Service

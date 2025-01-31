@@ -1,9 +1,9 @@
 package ru.otus.social_network.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.otus.api.v1.model.User;
-import ru.otus.api.v1.model.UserRegisterPostRequest;
 import ru.otus.social_network.model.Auth;
+import ru.otus.social_network.model.User;
+import ru.otus.social_network.model.UserRegisterPostRequest;
 
 import java.util.UUID;
 

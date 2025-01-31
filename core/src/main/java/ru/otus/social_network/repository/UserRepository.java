@@ -3,7 +3,8 @@ package ru.otus.social_network.repository;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.otus.api.v1.model.User;
+import ru.otus.social_network.model.User;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;

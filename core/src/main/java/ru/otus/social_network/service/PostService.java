@@ -6,9 +6,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.api.v1.model.DialogMessage;
-import ru.otus.api.v1.model.Post;
 import ru.otus.social_network.exception.InvalidDataException;
+import ru.otus.social_network.model.DialogMessage;
+import ru.otus.social_network.model.Post;
 import ru.otus.social_network.repository.PostRepository;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    private final RabbitTemplate rabbitTemplate;
+//    private final RabbitTemplate rabbitTemplate;
     private final int POST_FEED_LIMIT = 1000;
     private final int REDIS_TTL = 60;
 
@@ -28,7 +28,7 @@ public class PostService {
         this.successfulInsertsCounter = meterRegistry.counter("successful_inserts_total");
         this.postRepository = postRepository;
         this.redisTemplate = redisTemplate;
-        this.rabbitTemplate = rabbitTemplate;
+//        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Transactional(readOnly = false)
@@ -38,11 +38,11 @@ public class PostService {
             successfulInsertsCounter.increment(1.0);
         }
         var message = createMessage(post);
-        try {
-            rabbitTemplate.convertAndSend("postQueue", message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            rabbitTemplate.convertAndSend("postQueue", message);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         return postId;
     }

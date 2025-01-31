@@ -2,8 +2,8 @@ package ru.otus.social_network.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.api.v1.model.DialogMessage;
 import ru.otus.social_network.exception.InvalidDataException;
+import ru.otus.social_network.model.DialogMessage;
 import ru.otus.social_network.repository.FeedRepository;
 import java.util.List;
 

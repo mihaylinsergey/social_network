@@ -10,6 +10,9 @@ java {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+    mainClass.set("ru.otus.social_network.SocialNetworkApplication")
+}
 
 repositories {
     mavenCentral()

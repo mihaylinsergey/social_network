@@ -1,3 +1,25 @@
+#scrape_configs:
+#  - job_name: 'social-network'
+#    scrape_interval: 5s
+#    metrics_path: '/actuator/prometheus'
+#    static_configs:
+#      - targets: ['social-network-1:8090', 'social-network-2:8091']
+#  - job_name: 'pgmaster'
+#    scrape_interval: 5s
+#    metrics_path: '/actuator/prometheus'
+#    static_configs:
+#      - targets: ['pgmaster:5432']
+#  - job_name: 'pgslave'
+#    scrape_interval: 5s
+#    metrics_path: '/actuator/prometheus'
+#    static_configs:
+#      - targets: ['pgslave:5432']
+#  - job_name: 'pgslaveasync'
+#    scrape_interval: 5s
+#    metrics_path: '/actuator/prometheus'
+#    static_configs:
+#      - targets: [ 'pgslaveasync:5432' ]
+
 scrape_configs:
   - job_name: 'sample_monitoring'
     scrape_interval: 5s
